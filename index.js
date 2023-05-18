@@ -28,11 +28,12 @@ app.get('/api/goods', async (req, res) => {
       const section_title = $(head_element).find('.hormen__title').text().trim();
       $(head_element).find('.goods__cell').each((index, element) => {
 
+        const id = $(element).attr('data-id');
         const title = $(element).find('.goods__name ').text().trim();
         const price = $(element).find('.goods__value').text().trim();
         const image = $(element).find('.goods__img img').attr('src');
 
-        products.push({ section_title, title, price, image });
+        products.push({ id, section_title, title, price, image });
       });
     });
 
