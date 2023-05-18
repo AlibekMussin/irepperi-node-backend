@@ -30,7 +30,7 @@ app.get('/api/goods', async (req, res) => {
 
         const id = $(element).attr('data-id');
         const title = $(element).find('.goods__name ').text().trim();
-        const price = $(element).find('.goods__value').text().trim();
+        const price = parseInt($(element).find('.goods__value').text().trim());
         const image = $(element).find('.goods__img img').attr('src');
 
         products.push({ id, section_title, title, price, image });
