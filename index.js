@@ -48,6 +48,36 @@ app.get('/api/goods', async (req, res) => {
   }
 });
 
+app.get('/api/goods/:id', async (req, res, id) => {
+  try {
+    const url = process.env.PARSING_SITE+'/product/'+req.params.id;
+    console.log(url);
+    const response = await axios.get(url);
+    const $ = cheerio.load(response.data);
+
+   
+    const container = $('.container');
+    const element = $(container).find('.product__desc');
+    const title = $(container).find('.product__title').text().trim();
+    const price_str = $(container).find('.djs__price').text().trim();
+    const description = $(element).find('.product__desc-body').text().trim();      
+    const price = parseInt(price_str.replace(/\s/g, ""), 10);
+    const images = [];
+    $(container).find('.product__thumbnail').each((index, image_element) => {
+      const image_src = $(image_element).find('img').attr('data-full');
+      images.push({ image_src });
+    });   
+
+    product={ id, title, description, price, images };
+      
+   
+    res.json(product);
+  } catch (error) {
+    console.error('Error parsing website:', error);
+    res.status(500).json({ error: 'Failed to parse website' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
