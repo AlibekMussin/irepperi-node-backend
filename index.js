@@ -8,10 +8,11 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT;
 
+const allowOriginUrls = process.env.ALLOW_ORIGIN_URL.split(',');
 
 app.use(cors({
     credentials:true,
-    origin: [process.env.ALLOW_ORIGIN_URL]
+    origin: allowOriginUrls
     }));
 
 app.get('/api/goods', async (req, res) => {
