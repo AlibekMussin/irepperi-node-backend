@@ -22,7 +22,6 @@ app.get('/api/goods', async (req, res) => {
     const $ = cheerio.load(response.data);
 
     const products = [];
-    const final = {};
     const csrf_token = $('head').find('meta[name="csrf-token"]').text();
     console.log(csrf_token);
     $('.hormen__section').each((head_index, head_element) => {       
@@ -45,7 +44,7 @@ app.get('/api/goods', async (req, res) => {
         products.push({ id, section_title, title, price, image,sticker_text, has_sticker });
       });
     });
-    final = {csrf_token, products};
+    const final = {csrf_token, products};
     res.json(final);
   } catch (error) {
     console.error('Error parsing website:', error);
