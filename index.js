@@ -2,7 +2,6 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 require('dotenv').config();
 
-
 const express = require('express');
 const cors = require("cors");
 const app = express();
@@ -23,7 +22,9 @@ app.get('/api/goods', async (req, res) => {
     const $ = cheerio.load(response.data);
 
     const products = [];
-    
+    const final = {};
+    const csrf_token = $('head').find('meta[name="csrf-token"]').text();
+    console.log(csrf_token);
     $('.hormen__section').each((head_index, head_element) => {       
 
       const section_title = $(head_element).find('.hormen__title').text().trim();
@@ -38,16 +39,14 @@ app.get('/api/goods', async (req, res) => {
         
         const title = $(element).find('.goods__name ').text().trim();
         const price_str = $(element).find('.goods__value').text().trim();
-
         const price = parseInt(price_str.replace(/\s/g, ""), 10);
-
         const image = $(element).find('.goods__img img').attr('src');
 
         products.push({ id, section_title, title, price, image,sticker_text, has_sticker });
       });
     });
-
-    res.json(products);
+    final = {csrf_token, products};
+    res.json(final);
   } catch (error) {
     console.error('Error parsing website:', error);
     res.status(500).json({ error: 'Failed to parse website' });
@@ -61,7 +60,6 @@ app.get('/api/goods/:id', async (req, res, id) => {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
 
-   
     const container = $('.container');
     const element = $(container).find('.product__desc');
     const title = $(container).find('.product__title').text().trim();
