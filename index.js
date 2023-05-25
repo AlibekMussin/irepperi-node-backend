@@ -22,7 +22,7 @@ app.get('/api/goods', async (req, res) => {
     const $ = cheerio.load(response.data);
 
     const products = [];
-    const csrf_token = $('head').find('meta[name="csrf-token"]').text();
+    const csrf_token = $('head').find('meta[name="csrf-token"]').attr('content');
     console.log(csrf_token);
     $('.hormen__section').each((head_index, head_element) => {       
 
