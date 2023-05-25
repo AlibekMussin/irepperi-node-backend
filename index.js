@@ -30,6 +30,12 @@ app.get('/api/goods', async (req, res) => {
       $(head_element).find('.goods__cell').each((index, element) => {
 
         const id = $(element).attr('data-id');
+        const sticker_text = $(element).find('.goods__sticker').text().trim();
+        let has_sticker = false;
+        if (sticker_text == "На заказ"){
+          has_sticker = true;
+        }
+        
         const title = $(element).find('.goods__name ').text().trim();
         const price_str = $(element).find('.goods__value').text().trim();
 
@@ -37,7 +43,7 @@ app.get('/api/goods', async (req, res) => {
 
         const image = $(element).find('.goods__img img').attr('src');
 
-        products.push({ id, section_title, title, price, image });
+        products.push({ id, section_title, title, price, image,sticker_text, has_sticker });
       });
     });
 
