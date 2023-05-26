@@ -71,8 +71,25 @@ app.get('/api/goods/:id', async (req, res, id) => {
       const image_src = $(image_element).find('img').attr('data-full');
       images.push({ image_src });
     });   
+    const info_1_blocks = [];
+    const info_1 = [];
+    const info_2 = [];
+    
+    const info_block_1 = $(container).find('.goodpop__bot1');
+    const info_block_2 = $(container).find('.goodpop__bot2');
+    
+    $(info_block_1).find('.right').find('span').each((index, span_element) => {      
+      info_1_blocks.push($(span_element).text());
+    });
+    const lower = $(info_block_1).find('.lower').text().trim().replace('\n','');
+    info_1.push(info_1_blocks.join(" "), lower);
 
-    product={ id, title, description, price, images, main_image };
+    $(info_block_2).find('.right').each((index, div_element) => {
+      info_2.push($(div_element).text());
+    });
+    info = {info_1, info_2};
+
+    product={ id, title, description, price, images, main_image, info };
       
    
     res.json(product);
