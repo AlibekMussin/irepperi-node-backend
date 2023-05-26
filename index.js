@@ -60,6 +60,7 @@ app.get('/api/goods/:id', async (req, res, id) => {
     const $ = cheerio.load(response.data);
 
     const container = $('.container');
+    const main_image = $(container).find('.product__display-image').find('img').attr('src');
     const element = $(container).find('.product__desc');
     const title = $(container).find('.product__title').text().trim();
     const price_str = $(container).find('.djs__price').text().trim();
@@ -71,7 +72,7 @@ app.get('/api/goods/:id', async (req, res, id) => {
       images.push({ image_src });
     });   
 
-    product={ id, title, description, price, images };
+    product={ id, title, description, price, images, main_image };
       
    
     res.json(product);
