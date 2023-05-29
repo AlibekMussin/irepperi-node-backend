@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const puppeteer = require('puppeteer');
 require('dotenv').config();
 
 const express = require('express');
@@ -21,9 +22,19 @@ app.get('/api/goods', async (req, res) => {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
 
+    const setCookieHeader = response.headers['set-cookie'];
+    const cookies = parseCookies(setCookieHeader);
+
+    // Retrieve cookie by key
+    const lara_session = cookies['laravel_session'];
+    const xsrf_token = cookies['XSRF-TOKEN'];
+    
     const products = [];
     const csrf_token = $('head').find('meta[name="csrf-token"]').attr('content');
-    console.log(csrf_token);
+    // console.log("csrf_token: ", csrf_token);
+    // console.log("lara_session: ", lara_session);
+    // console.log("xsrf_token: ", xsrf_token);
+
     $('.hormen__section').each((head_index, head_element) => {       
 
       const section_title = $(head_element).find('.hormen__title').text().trim();
@@ -44,7 +55,7 @@ app.get('/api/goods', async (req, res) => {
         products.push({ id, section_title, title, price, image,sticker_text, has_sticker });
       });
     });
-    const final = {csrf_token, products};
+    const final = {csrf_token, lara_session, xsrf_token, products};
     res.json(final);
   } catch (error) {
     console.error('Error parsing website:', error);
@@ -102,3 +113,16 @@ app.get('/api/goods/:id', async (req, res, id) => {
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+function parseCookies(setCookieHeader) {
+  const cookies = {};
+
+  if (setCookieHeader) {
+    setCookieHeader.forEach((cookie) => {
+      const [name, value] = cookie.split(';')[0].split('=');
+      cookies[name.trim()] = value.trim();
+    });
+  }
+
+  return cookies;
+}
