@@ -121,6 +121,7 @@ app.get('/api/order', async (req, res) => {
     const url_order = process.env.PARSING_SITE+'/order'
     const url_cart = process.env.PARSING_SITE+'/cart'
     const cookies = req.cookies;
+    console.log('cookies', cookies);
     const laravel_session = cookies['laravel_session'];
     const xsrf_token = cookies['XSRF-TOKEN'];
     console.log('laravel_session', laravel_session);
@@ -171,30 +172,24 @@ app.post('/api/cart', async (req, res) => {
     const url_cart = process.env.PARSING_SITE+'/cart'
     const cookies = req.cookies;
     const body = req.body
-    console.log(req.body);
-    const laravel_session = cookies['laravel_session'];
-    const xsrf_token = cookies['XSRF-TOKEN'];
-    
-    // const cookie_str = 'XSRF-TOKEN='+xsrf_token+'; laravel_session='+laravel_session;
-    
     const cookie_str = body.cookie_str
-    console.log('cookie_str', cookie_str);
+    
     const headers = {
       'Cookie': cookie_str,
     };
+    
 
     const sending_body = {
       "product": body.product_id,
-      "action": "add",
+      "action": body.action,
       "amount": 1,
       "package": -1,
       "_token":body.token
     };
     
     const response = await axios.post(url_cart,sending_body,{headers: headers});    
-    console.log(response.text);
     
-    res.json("OK");
+    res.json(response.text);
   } catch (error) {
     console.error('Error parsing website:', error);
     res.status(500).json({ error: 'Failed to parse website' });
