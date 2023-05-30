@@ -4,8 +4,12 @@ require('dotenv').config();
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const cors = require("cors");
 const app = express();
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
 app.use(cookieParser());
 const port = process.env.PORT;
 
@@ -156,6 +160,39 @@ app.get('/api/order', async (req, res) => {
     
     product={total, goods};         
     res.json(product);
+  } catch (error) {
+    console.error('Error parsing website:', error);
+    res.status(500).json({ error: 'Failed to parse website' });
+  }
+});
+
+app.post('/api/cart', async (req, res) => {
+  try {
+    const url_cart = process.env.PARSING_SITE+'/cart'
+    const cookies = req.cookies;
+    const body = req.body
+    console.log(req.body);
+    const laravel_session = cookies['laravel_session'];
+    const xsrf_token = cookies['XSRF-TOKEN'];
+    
+    const cookie_str = 'XSRF-TOKEN='+xsrf_token+'; laravel_session='+laravel_session;
+    console.log('cookie_str', cookie_str);
+    const headers = {
+      'Cookie': cookie_str,
+    };
+
+    const sending_body = {
+      "product": body.product_id,
+      "action": "add",
+      "amount": 1,
+      "package": -1,
+      "_token":body.token
+    };
+    
+    const response = await axios.post(url_cart,sending_body,{headers: headers});    
+    console.log(response.text);
+    
+    res.json("OK");
   } catch (error) {
     console.error('Error parsing website:', error);
     res.status(500).json({ error: 'Failed to parse website' });
