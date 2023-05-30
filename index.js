@@ -3,8 +3,10 @@ const cheerio = require('cheerio');
 require('dotenv').config();
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const cors = require("cors");
 const app = express();
+app.use(cookieParser());
 const port = process.env.PORT;
 
 const allowOriginUrls = process.env.ALLOW_ORIGIN_URL.split(',');
@@ -114,11 +116,18 @@ app.get('/api/order', async (req, res) => {
   try {
     const url_order = process.env.PARSING_SITE+'/order'
     const url_cart = process.env.PARSING_SITE+'/cart'
+    const cookies = req.cookies;
+    const laravel_session = cookies['laravel_session'];
+    const xsrf_token = cookies['XSRF-TOKEN'];
+    console.log('laravel_session', laravel_session);
+    console.log('xsrf_token', xsrf_token);
 
     console.log(url_order);
     console.log(url_cart);
+    const cookie_str = 'XSRF-TOKEN='+xsrf_token+'; laravel_session='+laravel_session;
+    console.log('cookie_str', cookie_str);
     const headers = {
-      'Cookie': 'XSRF-TOKEN=eyJpdiI6IkJ4cmoxbFd5cmp1ZXEwLzJtQTQyRUE9PSIsInZhbHVlIjoiWWtrWkprVHA1NDR3UEhJQjlxR1R5ODJ0OTVaU05xMFJMbDFkWHZRSk42WDBXalE4NzI4cnY4SUVyQmJWQWN0Z0FyOVBXOUlOQktqQy85N1Eya2tUWDBkV28zQ2p5Nkd4eFdnalZFaWlmcFVhaC9KYlppR1Noam5jUmhkZFlYQ1YiLCJtYWMiOiIyOTExZjI4OWFkMTMxNTk5NDcyMGFkYThjMzQyN2EyMjVjY2I0ZmYzZmFmNTIxNTMwNWEyZmRmNTM3MjE1NDM3In0%3D; laravel_session=eyJpdiI6ImhBc0dVc1FyWW1CZzR2OXRtdG01Zmc9PSIsInZhbHVlIjoiQ0o1c3lmdkEyZDF0WGlPOFVFcFZqY3N2ZEx3Z1pMUGlEMUJPVWxsSjFwVkgxbXRBVkp2VThTem9LbHhmdGNzS2hjeFlIREVNS2RLZnZTY3Q3cGYrU3RNZzY5eFZWY1FtdHlZd0ZkLzZKL0JLUjhKZWVhS2ZzZU1rV0gwSmxMZDciLCJtYWMiOiJlNGFlZmRmZTBhODMwYTQwZDAwNjg3ODQzMjhiMzI2ODM5MWYxNzFlZjU4NTlkZjU0YjE3ZDU2MTRhOWMxNzA5In0%3D',        
+      'Cookie': cookie_str,
     };
     const response = await axios.get(url_order,{headers: headers});
     const $ = cheerio.load(response.data);    
@@ -143,7 +152,7 @@ app.get('/api/order', async (req, res) => {
       goods.push(good);
     });
     // const total = parseInt(total_str.replace(/\s/g, ""), 10);
-    console.log('goods: ', goods);
+    // console.log('goods: ', goods);
     
     product={total, goods};         
     res.json(product);
