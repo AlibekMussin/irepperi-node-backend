@@ -121,7 +121,7 @@ app.get('/api/order', async (req, res) => {
     const url_order = process.env.PARSING_SITE+'/order'
     const url_cart = process.env.PARSING_SITE+'/cart'
     const cookies = req.cookies;
-    console.log('cookies', cookies);
+    console.log('req.headers', req.headers);
     const laravel_session = cookies['laravel_session'];
     const xsrf_token = cookies['XSRF-TOKEN'];
     console.log('laravel_session', laravel_session);
