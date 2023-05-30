@@ -76,6 +76,7 @@ app.get('/api/goods/:id', async (req, res, id) => {
     const price_str = $(container).find('.djs__price').text().trim();
     const description = $(element).find('.product__desc-body').text().trim();      
     const price = parseInt(price_str.replace(/\s/g, ""), 10);
+
     const images = [];
     $(container).find('.product__thumbnail').each((index, image_element) => {
       const image_src = $(image_element).find('img').attr('data-full');
@@ -99,9 +100,52 @@ app.get('/api/goods/:id', async (req, res, id) => {
     });
     info = {info_1, info_2};
 
-    product={ id, title, description, price, images, main_image, info };
-      
+    product={ id, title, description, price, images, main_image, info };      
    
+    res.json(product);
+  } catch (error) {
+    console.error('Error parsing website:', error);
+    res.status(500).json({ error: 'Failed to parse website' });
+  }
+});
+
+
+app.get('/api/order', async (req, res) => {
+  try {
+    const url_order = process.env.PARSING_SITE+'/order'
+    const url_cart = process.env.PARSING_SITE+'/cart'
+
+    console.log(url_order);
+    console.log(url_cart);
+    const headers = {
+      'Cookie': 'XSRF-TOKEN=eyJpdiI6IkJ4cmoxbFd5cmp1ZXEwLzJtQTQyRUE9PSIsInZhbHVlIjoiWWtrWkprVHA1NDR3UEhJQjlxR1R5ODJ0OTVaU05xMFJMbDFkWHZRSk42WDBXalE4NzI4cnY4SUVyQmJWQWN0Z0FyOVBXOUlOQktqQy85N1Eya2tUWDBkV28zQ2p5Nkd4eFdnalZFaWlmcFVhaC9KYlppR1Noam5jUmhkZFlYQ1YiLCJtYWMiOiIyOTExZjI4OWFkMTMxNTk5NDcyMGFkYThjMzQyN2EyMjVjY2I0ZmYzZmFmNTIxNTMwNWEyZmRmNTM3MjE1NDM3In0%3D; laravel_session=eyJpdiI6ImhBc0dVc1FyWW1CZzR2OXRtdG01Zmc9PSIsInZhbHVlIjoiQ0o1c3lmdkEyZDF0WGlPOFVFcFZqY3N2ZEx3Z1pMUGlEMUJPVWxsSjFwVkgxbXRBVkp2VThTem9LbHhmdGNzS2hjeFlIREVNS2RLZnZTY3Q3cGYrU3RNZzY5eFZWY1FtdHlZd0ZkLzZKL0JLUjhKZWVhS2ZzZU1rV0gwSmxMZDciLCJtYWMiOiJlNGFlZmRmZTBhODMwYTQwZDAwNjg3ODQzMjhiMzI2ODM5MWYxNzFlZjU4NTlkZjU0YjE3ZDU2MTRhOWMxNzA5In0%3D',        
+    };
+    const response = await axios.get(url_order,{headers: headers});
+    const $ = cheerio.load(response.data);    
+    const total_str = $('.container').find('.order__finish').find('.right').find('.djs__total').text().trim();    
+    const total = parseInt(total_str.replace(/\s/g, ""), 10);
+    console.log('total: ', total);
+
+    const response_cart = await axios.get(url_cart,{headers: headers});
+    const $el = cheerio.load(response_cart.data);        
+    const goods = [];
+    $el('.container').find('.cart__single').each((index, element_cart) => {
+      let product_name = $(element_cart).find('.cart__name').text().trim();
+      let package_name = $(element_cart).find('.package__name').text().trim();
+      let price_str = $(element_cart).find('.cart__product').find('.cart__price').find('.cart__price-single').text().trim();
+      let price = parseInt(price_str.replace(/\s/g, ""), 10);
+      let products_count = $(element_cart).find('.djs__cart-input').attr('value');
+      let product_img = $(element_cart).find('.cart__left div img').attr('src');
+
+      let common_price = price*products_count;
+      
+      let good = {product_img, product_name, package_name, price, products_count, common_price};
+      goods.push(good);
+    });
+    // const total = parseInt(total_str.replace(/\s/g, ""), 10);
+    console.log('goods: ', goods);
+    
+    product={total, goods};         
     res.json(product);
   } catch (error) {
     console.error('Error parsing website:', error);
