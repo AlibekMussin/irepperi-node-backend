@@ -175,7 +175,9 @@ app.post('/api/cart', async (req, res) => {
     const laravel_session = cookies['laravel_session'];
     const xsrf_token = cookies['XSRF-TOKEN'];
     
-    const cookie_str = 'XSRF-TOKEN='+xsrf_token+'; laravel_session='+laravel_session;
+    // const cookie_str = 'XSRF-TOKEN='+xsrf_token+'; laravel_session='+laravel_session;
+    
+    const cookie_str = body.cookie_str
     console.log('cookie_str', cookie_str);
     const headers = {
       'Cookie': cookie_str,
