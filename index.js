@@ -120,16 +120,8 @@ app.get('/api/order', async (req, res) => {
   try {
     const url_order = process.env.PARSING_SITE+'/order'
     const url_cart = process.env.PARSING_SITE+'/cart'
-    const cookies = req.cookies;
-    console.log('req.headers', req.headers);
-    const laravel_session = cookies['laravel_session'];
-    const xsrf_token = cookies['XSRF-TOKEN'];
-    console.log('laravel_session', laravel_session);
-    console.log('xsrf_token', xsrf_token);
-
-    console.log(url_order);
-    console.log(url_cart);
-    const cookie_str = 'XSRF-TOKEN='+xsrf_token+'; laravel_session='+laravel_session;
+    
+    const cookie_str = req.headers['cookies'];
     console.log('cookie_str', cookie_str);
     const headers = {
       'Cookie': cookie_str,
