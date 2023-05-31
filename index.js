@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 require('dotenv').config();
-
+const FormData = require('form-data');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -167,15 +167,40 @@ app.get('/api/order', async (req, res) => {
 app.post('/api/order', async (req, res) => {
   try {
     const cookie_str = req.headers['cookies'];    
+    // const cookie_str = 'XSRF-TOKEN=eyJpdiI6IjZ6a3ZMM0I4d3dJQWxBYWlBcTlmR2c9PSIsInZhbHVlIjoicTFWcEtLMWNnMU05L25FeVE3ZGhwVWdIV1Exdk43c0VoSG9UUzZLbXB6MWg4Q28rRlpMcTNWV1N2NmJ2WFBDazhqTHRJUWNMa2lwcGYvb1d3QytvQ3kxZStGMkYzSzdKY2Q2eFp6UzJ0UWpxSG5aMzZnU0tkSXRvSlpQTEJobVoiLCJtYWMiOiI5MWVmMzU4NzIzZTljZTU1MTAwY2YwY2FiOTg4YTI3NGM1MzJkZmExZDkzODU3NjE5OWY0NGY0MTNmYTMxNWIyIn0%3D; laravel_session=eyJpdiI6ImJ5U09rUEdEakZZUUhwYlBYNDFBckE9PSIsInZhbHVlIjoiOGJpV3BPMzVkVTluby9DVjZCbDhoQWJBSUhIU0pkcW5lL1NPQVRQVmhNaG1xUHR3SDhIRG90b1FSdlNHQXpkZG1oTGlld1FsQWNZZjEyeS8zTnFSWGlnd2Z2Mlg1bWVPZmJyQU96MWNOZDVhVUJIeVhEYzRsRzBpRnY2Z3ZPM0IiLCJtYWMiOiJhNjA4MTMzMTZkYTVjMzlhZGIyNWI3NTNhNWU2MDdhNmRjMjk1YWEyNjg3NmUxODk2MThjY2RiODg3YWJlZjE1In0%3D';
     console.log('cookie_str', cookie_str);
     const body = req.body
     const headers = {
       'Cookie': cookie_str,
     };
     console.log(body);
-    res.json(body);
 
-    
+    const formData = new FormData();
+    formData.append('firstname', body.firstName);
+    formData.append('lastname', body.lastName);
+
+    formData.append('phone', body.phoneNumber);
+    formData.append('delivery_type', body.deliveryMethod);
+    formData.append('delivery_city', body.city);
+    formData.append('delivery_street', body.streetName);
+
+    formData.append('delivery_house', body.phoneNumber);
+    formData.append('delivery_flat', body.deliveryMethod);
+    formData.append('payment', 'kaspi');
+    formData.append('promocode', '');
+    formData.append('_method', 'PUT');
+    formData.append('_token', body.token);
+
+    const response = await axios.post('https://irepperi.kz/order', formData, {
+      headers: {
+        ...formData.getHeaders(),
+        Cookie: cookie_str
+      }, // Установка заголовков для FormData
+    });
+
+    console.log(response.data);
+
+    res.json(response.data);
   } catch (error) {
     console.error('Error send order:', error);
     res.status(500).json({ error: 'Failed to parse website' });
