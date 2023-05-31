@@ -121,15 +121,19 @@ app.get('/api/order', async (req, res) => {
     const url_order = process.env.PARSING_SITE+'/order'
     const url_cart = process.env.PARSING_SITE+'/cart'
     
-    const cookie_str = req.headers['cookies'];
+    const cookie_str = req.headers['cookies'];    
     console.log('cookie_str', cookie_str);
     const headers = {
       'Cookies': cookie_str,
     };
     const response = await axios.get(url_order,{headers: headers});
     const $ = cheerio.load(response.data);    
+    const total_first_str = $('.container').find('.order__finish').find('.djs__order-sum').text().trim();    
+    const total_first = parseInt(total_first_str.replace(/\s/g, ""), 10);
     const total_str = $('.container').find('.order__finish').find('.right').find('.djs__total').text().trim();    
+    const delivery_str = $('.container').find('.order__delivery').find('.right').text().trim();
     const total = parseInt(total_str.replace(/\s/g, ""), 10);
+    const delivery = parseInt(delivery_str.replace(/\s/g, ""), 10);
     console.log('total: ', total);
 
     const response_cart = await axios.get(url_cart,{headers: headers});
@@ -151,7 +155,8 @@ app.get('/api/order', async (req, res) => {
     // const total = parseInt(total_str.replace(/\s/g, ""), 10);
     // console.log('goods: ', goods);
     
-    product={total, goods};         
+    product={goods, total_first, delivery, total };         
+    
     res.json(product);
   } catch (error) {
     console.error('Error parsing website:', error);
