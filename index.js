@@ -124,7 +124,7 @@ app.get('/api/order', async (req, res) => {
     const cookie_str = req.headers['cookies'];    
     console.log('cookie_str', cookie_str);
     const headers = {
-      'Cookies': cookie_str,
+      'Cookie': cookie_str,
     };
     const response = await axios.get(url_order,{headers: headers});
     const $ = cheerio.load(response.data);    
