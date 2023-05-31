@@ -190,6 +190,7 @@ app.post('/api/order', async (req, res) => {
     formData.append('promocode', '');
     formData.append('_method', 'PUT');
     formData.append('_token', body.token);
+    console.log(formData);
 
     const response = await axios.post('https://irepperi.kz/order', formData, {
       headers: {
