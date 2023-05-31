@@ -164,6 +164,24 @@ app.get('/api/order', async (req, res) => {
   }
 });
 
+app.post('/api/order', async (req, res) => {
+  try {
+    const cookie_str = req.headers['cookies'];    
+    console.log('cookie_str', cookie_str);
+    const body = req.body
+    const headers = {
+      'Cookie': cookie_str,
+    };
+    console.log(body);
+    res.json(body);
+
+    
+  } catch (error) {
+    console.error('Error send order:', error);
+    res.status(500).json({ error: 'Failed to parse website' });
+  }
+});
+
 app.post('/api/cart', async (req, res) => {
   try {
     const url_cart = process.env.PARSING_SITE+'/cart'
