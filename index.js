@@ -122,6 +122,7 @@ app.get('/api/order', async (req, res) => {
     const url_cart = process.env.PARSING_SITE+'/cart'
     
     const cookie_str = req.headers['cookies'];    
+    // const cookie_str = 'XSRF-TOKEN=eyJpdiI6IjZ6a3ZMM0I4d3dJQWxBYWlBcTlmR2c9PSIsInZhbHVlIjoicTFWcEtLMWNnMU05L25FeVE3ZGhwVWdIV1Exdk43c0VoSG9UUzZLbXB6MWg4Q28rRlpMcTNWV1N2NmJ2WFBDazhqTHRJUWNMa2lwcGYvb1d3QytvQ3kxZStGMkYzSzdKY2Q2eFp6UzJ0UWpxSG5aMzZnU0tkSXRvSlpQTEJobVoiLCJtYWMiOiI5MWVmMzU4NzIzZTljZTU1MTAwY2YwY2FiOTg4YTI3NGM1MzJkZmExZDkzODU3NjE5OWY0NGY0MTNmYTMxNWIyIn0%3D; laravel_session=eyJpdiI6ImJ5U09rUEdEakZZUUhwYlBYNDFBckE9PSIsInZhbHVlIjoiOGJpV3BPMzVkVTluby9DVjZCbDhoQWJBSUhIU0pkcW5lL1NPQVRQVmhNaG1xUHR3SDhIRG90b1FSdlNHQXpkZG1oTGlld1FsQWNZZjEyeS8zTnFSWGlnd2Z2Mlg1bWVPZmJyQU96MWNOZDVhVUJIeVhEYzRsRzBpRnY2Z3ZPM0IiLCJtYWMiOiJhNjA4MTMzMTZkYTVjMzlhZGIyNWI3NTNhNWU2MDdhNmRjMjk1YWEyNjg3NmUxODk2MThjY2RiODg3YWJlZjE1In0%3D';
     console.log('cookie_str', cookie_str);
     const headers = {
       'Cookie': cookie_str,
@@ -135,6 +136,8 @@ app.get('/api/order', async (req, res) => {
     const total = parseInt(total_str.replace(/\s/g, ""), 10);
     const delivery = parseInt(delivery_str.replace(/\s/g, ""), 10);
     console.log('total: ', total);
+
+    const idempotency_key = $('.container').find('#order-form').find('input[name="idempotency_key"]').attr('value');
 
     const response_cart = await axios.get(url_cart,{headers: headers});
     const $el = cheerio.load(response_cart.data);        
@@ -155,7 +158,7 @@ app.get('/api/order', async (req, res) => {
     // const total = parseInt(total_str.replace(/\s/g, ""), 10);
     // console.log('goods: ', goods);
     
-    product={goods, total_first, delivery, total };         
+    product={goods, total_first, delivery, total, idempotency_key };
     
     res.json(product);
   } catch (error) {
