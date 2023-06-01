@@ -123,7 +123,7 @@ app.get('/api/order', async (req, res) => {
     
     const cookie_str = req.headers['cookies'];    
     // const cookie_str = 'XSRF-TOKEN=eyJpdiI6IjZ6a3ZMM0I4d3dJQWxBYWlBcTlmR2c9PSIsInZhbHVlIjoicTFWcEtLMWNnMU05L25FeVE3ZGhwVWdIV1Exdk43c0VoSG9UUzZLbXB6MWg4Q28rRlpMcTNWV1N2NmJ2WFBDazhqTHRJUWNMa2lwcGYvb1d3QytvQ3kxZStGMkYzSzdKY2Q2eFp6UzJ0UWpxSG5aMzZnU0tkSXRvSlpQTEJobVoiLCJtYWMiOiI5MWVmMzU4NzIzZTljZTU1MTAwY2YwY2FiOTg4YTI3NGM1MzJkZmExZDkzODU3NjE5OWY0NGY0MTNmYTMxNWIyIn0%3D; laravel_session=eyJpdiI6ImJ5U09rUEdEakZZUUhwYlBYNDFBckE9PSIsInZhbHVlIjoiOGJpV3BPMzVkVTluby9DVjZCbDhoQWJBSUhIU0pkcW5lL1NPQVRQVmhNaG1xUHR3SDhIRG90b1FSdlNHQXpkZG1oTGlld1FsQWNZZjEyeS8zTnFSWGlnd2Z2Mlg1bWVPZmJyQU96MWNOZDVhVUJIeVhEYzRsRzBpRnY2Z3ZPM0IiLCJtYWMiOiJhNjA4MTMzMTZkYTVjMzlhZGIyNWI3NTNhNWU2MDdhNmRjMjk1YWEyNjg3NmUxODk2MThjY2RiODg3YWJlZjE1In0%3D';
-    console.log('cookie_str', cookie_str);
+    console.log('cookie_str for order get', cookie_str);
     const headers = {
       'Cookie': cookie_str,
     };
@@ -171,7 +171,7 @@ app.post('/api/order', async (req, res) => {
   try {
     const cookie_str = req.headers['cookies'];    
     // const cookie_str = 'XSRF-TOKEN=eyJpdiI6IjZ6a3ZMM0I4d3dJQWxBYWlBcTlmR2c9PSIsInZhbHVlIjoicTFWcEtLMWNnMU05L25FeVE3ZGhwVWdIV1Exdk43c0VoSG9UUzZLbXB6MWg4Q28rRlpMcTNWV1N2NmJ2WFBDazhqTHRJUWNMa2lwcGYvb1d3QytvQ3kxZStGMkYzSzdKY2Q2eFp6UzJ0UWpxSG5aMzZnU0tkSXRvSlpQTEJobVoiLCJtYWMiOiI5MWVmMzU4NzIzZTljZTU1MTAwY2YwY2FiOTg4YTI3NGM1MzJkZmExZDkzODU3NjE5OWY0NGY0MTNmYTMxNWIyIn0%3D; laravel_session=eyJpdiI6ImJ5U09rUEdEakZZUUhwYlBYNDFBckE9PSIsInZhbHVlIjoiOGJpV3BPMzVkVTluby9DVjZCbDhoQWJBSUhIU0pkcW5lL1NPQVRQVmhNaG1xUHR3SDhIRG90b1FSdlNHQXpkZG1oTGlld1FsQWNZZjEyeS8zTnFSWGlnd2Z2Mlg1bWVPZmJyQU96MWNOZDVhVUJIeVhEYzRsRzBpRnY2Z3ZPM0IiLCJtYWMiOiJhNjA4MTMzMTZkYTVjMzlhZGIyNWI3NTNhNWU2MDdhNmRjMjk1YWEyNjg3NmUxODk2MThjY2RiODg3YWJlZjE1In0%3D';
-    console.log('cookie_str', cookie_str);
+    console.log('cookie_str for order post', cookie_str);
     const body = req.body
     const headers = {
       'Cookie': cookie_str,
@@ -245,7 +245,7 @@ app.get('/api/thankyou', async (req, res) => {
     
     const cookie_str = req.headers['cookies'];    
     // const cookie_str = 'XSRF-TOKEN=eyJpdiI6ImNkMjQ1eUIrNjFEcUx4VTlRM2JicXc9PSIsInZhbHVlIjoic3Y2eTZlQS9abExCUm9CeG16NXlMWHl3VVQxTnBmRmlsN2o4TFN0T3hwSDdvUzh4eEpFanRJK0MrRUhVVlpOQVkwVnc5RGlFOCtxRDFyREpiRzZycXZQUGVlS3FDYnBIWWpkRHRUWG9aZHFEVjM5bzE1cjl0ZkMyQTRMdTNhSlQiLCJtYWMiOiI0MTczMGJjZTBlNjUzMmFmMWRjNzUwNjM3YmI5ZDYyNjA3ZmFkNmY5NzNkODMyYzQ0YzI3NGRhMWQyMzVlZGE3In0%3D; laravel_session=eyJpdiI6Ill5bTB2bzVNdWFhL3Q4V3p3MExUWVE9PSIsInZhbHVlIjoidHFRS1BXSnhYNHhzOStITkRsRWh3S1R3MmFSaUwwUFQwUXdCN0lTY1RKbkgxUlJQd2p5aGowRUZhalo3cVFNQWNVZ1pUUFlEaXFocUxCU05mbFNRY0tXM01VZ1FNaDBoSDN0RjlWelF4c0xmdHdmeWY5Y0hSTGVzL0wrazRtWFgiLCJtYWMiOiIzMDY0ZmM3YTc5NWNkNWI0YmRkYTJkYmExMTE0YTNhOTU4NTA0OTFiZDAyMmRhN2JhNjNjMDcwNGRiZGYwMWRkIn0%3D';
-    console.log('cookie_str', cookie_str);
+    console.log('cookie_str for thank you', cookie_str);
     const headers = {
       'Cookie': cookie_str,
     };
