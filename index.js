@@ -221,8 +221,7 @@ app.post('/api/cart', async (req, res) => {
     
     const headers = {
       'Cookie': cookie_str,
-    };
-    
+    };    
 
     const sending_body = {
       "product": body.product_id,
