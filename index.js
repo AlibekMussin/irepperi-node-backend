@@ -204,7 +204,7 @@ app.post('/api/order', async (req, res) => {
     });
     console.log('status', response.status);
     console.log('------------');
-    console.log(response.text);
+    console.log(response.data);
     console.log('------------');    
 
     console.log('data sended');
