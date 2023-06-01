@@ -203,9 +203,8 @@ app.post('/api/order', async (req, res) => {
       }, // Установка заголовков для FormData
     });
 
-    console.log(response.data);
-
-    res.json(response.data);
+    console.log('data sended');
+    res.json('data sended');
   } catch (error) {
     console.error('Error send order:', error);
     res.status(500).json({ error: 'Failed to parse website' });
