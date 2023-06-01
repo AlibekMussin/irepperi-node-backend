@@ -255,7 +255,9 @@ app.get('/api/thankyou', async (req, res) => {
     const text = $('.container').find('.confirmed__text').text().trim();
     const number = $('.container').find('.confirmed__number').text().trim();
     const payment = $('.container').find('.confirmed__kaspi primary-bgc-03, p').text().trim();
-    res.json({title,text,number,payment});
+    const resp_tnx = {title,text,number,payment};
+    console.log(resp_tnx);
+    res.json(resp_tnx);
 
     
   } catch (error) {
