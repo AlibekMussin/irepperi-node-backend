@@ -202,13 +202,17 @@ app.post('/api/order', async (req, res) => {
         Cookie: cookie_str
       }, // Установка заголовков для FormData
     });
-    console.log('status', response.status);
-    console.log('------------');
-    console.log(response.data);
-    console.log('------------');    
-
+    
+    const $ = cheerio.load(response.data);  
+    const title = $('.container').find('.confirmed__title').text().trim();
+    const text = $('.container').find('.confirmed__text').text().trim();
+    const number = $('.container').find('.confirmed__number').text().trim();
+    const payment = $('.container').find('.confirmed__kaspi primary-bgc-03, p').text().trim();
+    const resp_tnx = {title,text,number,payment};
     console.log('data sended');
-    res.json('data sended');
+    console.log(resp_tnx);
+    res.json(resp_tnx);    
+    
   } catch (error) {
     console.error('Error send order:', error);
     res.status(500).json({ error: 'Failed to parse website' });
