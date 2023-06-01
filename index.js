@@ -202,6 +202,10 @@ app.post('/api/order', async (req, res) => {
         Cookie: cookie_str
       }, // Установка заголовков для FormData
     });
+    console.log('status', response.status);
+    console.log('------------');
+    console.log(response.text);
+    console.log('------------');    
 
     console.log('data sended');
     res.json('data sended');
