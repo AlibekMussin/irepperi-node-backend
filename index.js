@@ -241,6 +241,31 @@ app.post('/api/cart', async (req, res) => {
   }
 });
 
+app.get('/api/thankyou', async (req, res) => {
+  try {
+    const url_tnx = process.env.PARSING_SITE+'/order/21574/thankyou'
+    
+    const cookie_str = req.headers['cookies'];    
+    // const cookie_str = 'XSRF-TOKEN=eyJpdiI6ImNkMjQ1eUIrNjFEcUx4VTlRM2JicXc9PSIsInZhbHVlIjoic3Y2eTZlQS9abExCUm9CeG16NXlMWHl3VVQxTnBmRmlsN2o4TFN0T3hwSDdvUzh4eEpFanRJK0MrRUhVVlpOQVkwVnc5RGlFOCtxRDFyREpiRzZycXZQUGVlS3FDYnBIWWpkRHRUWG9aZHFEVjM5bzE1cjl0ZkMyQTRMdTNhSlQiLCJtYWMiOiI0MTczMGJjZTBlNjUzMmFmMWRjNzUwNjM3YmI5ZDYyNjA3ZmFkNmY5NzNkODMyYzQ0YzI3NGRhMWQyMzVlZGE3In0%3D; laravel_session=eyJpdiI6Ill5bTB2bzVNdWFhL3Q4V3p3MExUWVE9PSIsInZhbHVlIjoidHFRS1BXSnhYNHhzOStITkRsRWh3S1R3MmFSaUwwUFQwUXdCN0lTY1RKbkgxUlJQd2p5aGowRUZhalo3cVFNQWNVZ1pUUFlEaXFocUxCU05mbFNRY0tXM01VZ1FNaDBoSDN0RjlWelF4c0xmdHdmeWY5Y0hSTGVzL0wrazRtWFgiLCJtYWMiOiIzMDY0ZmM3YTc5NWNkNWI0YmRkYTJkYmExMTE0YTNhOTU4NTA0OTFiZDAyMmRhN2JhNjNjMDcwNGRiZGYwMWRkIn0%3D';
+    console.log('cookie_str', cookie_str);
+    const headers = {
+      'Cookie': cookie_str,
+    };
+    const response = await axios.get(url_tnx,{headers: headers});
+    const $ = cheerio.load(response.data);  
+    const title = $('.container').find('.confirmed__title').text().trim();
+    const text = $('.container').find('.confirmed__text').text().trim();
+    const number = $('.container').find('.confirmed__number').text().trim();
+    const payment = $('.container').find('.confirmed__kaspi primary-bgc-03, p').text().trim();
+    res.json({title,text,number,payment});
+
+    
+  } catch (error) {
+    console.error('Error parsing website:', error);
+    res.status(500).json({ error: 'Failed to parse website' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
